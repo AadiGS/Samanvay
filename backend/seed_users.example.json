@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Demo Admin",
+    "email": "admin@samanvay.test",
+    "password": "change-me",
+    "role": "admin",
+    "ministry": "State Planning Department"
+  },
+  {
+    "name": "Demo Analyst",
+    "email": "analyst@samanvay.test",
+    "password": "change-me",
+    "role": "analyst",
+    "ministry": "Ministry of Jal Shakti"
+  }
+]

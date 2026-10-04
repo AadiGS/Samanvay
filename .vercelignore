@@ -1,0 +1,7 @@
+.venv
+__pycache__
+backend/samanvay.db
+backend/seed_users.json
+run.bat
+run.sh
+render.yaml

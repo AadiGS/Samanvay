@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Samanvay District Intelligence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@500;600&display=swap">
+<style>
+/* Layout: light-only liquid glass. Off-white ground with soft colour fields; floating glass bar and translucent panels; the map is the one saturated element. */
+:root{color-scheme:light;--bg:#F6F4EE;--surface:rgba(255,255,255,.52);--solid:#FFFFFF;--sunk:rgba(22,32,46,.055);--edge:rgba(255,255,255,.85);--ink:#16202E;--muted:#616A78;--line:rgba(22,32,46,.10);--accent:#1F4FA3;--accent-ink:#FFFFFF;--map-lo:#E4EAF3;--map-hi:#17376B;--none:#DAD7CE;--high:#B3261E;--med:#9A5B00;--low:#2F6690;--saffron:#D9822B;
+--glass:blur(22px) saturate(1.6);--shadow:inset 0 1px 0 rgba(255,255,255,.9),0 14px 34px -18px rgba(22,32,46,.22);
+--display:"Noto Sans","Noto Sans Devanagari","Segoe UI",sans-serif;--body:"Noto Sans","Noto Sans Devanagari","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(42vmax 42vmax at 8% 4%,rgba(125,165,235,.30),transparent 70%),radial-gradient(38vmax 38vmax at 94% 16%,rgba(240,175,100,.24),transparent 70%),radial-gradient(46vmax 46vmax at 62% 104%,rgba(120,200,190,.22),transparent 70%)}
+body{position:relative;z-index:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+header.top{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:5;margin-top:10px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:8px 10px 8px 14px;border-radius:26px;background:rgba(255,255,255,.58);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow)}
+.mark{flex:0 0 auto;width:34px;height:34px;color:var(--ink)}
+.brand{display:flex;align-items:baseline;gap:8px;min-width:0}
+.brand b{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.01em}
+.brand .hi{font:600 14px "Noto Sans Devanagari",var(--body);color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto;padding:3px;border-radius:999px;background:var(--sunk)}
+nav button{font:500 13.5px var(--body);color:var(--muted);background:none;border:0;padding:7px 14px;border-radius:999px;cursor:pointer}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected="true"]{background:var(--solid);color:var(--ink);font-weight:600;box-shadow:0 2px 8px -3px rgba(22,32,46,.3)}
+.proto{font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.proto::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--saffron)}
+footer .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 32px;padding-block:8px 36px;font-size:12.5px;color:var(--muted)}
+footer h4{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px;color:var(--ink)}
+footer p{margin:0;max-width:46ch}
+button:focus-visible,path:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(24px,2.6vw,32px);line-height:1.15;letter-spacing:-.025em;margin:0;text-wrap:balance;max-width:34ch}
+h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0}
+.lede{color:var(--muted);max-width:62ch;margin:6px 0 0;font-size:14px}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 40px;align-items:end}
+.kpis{display:flex;flex-wrap:wrap;gap:6px 28px}
+.kpi b{display:block;font:500 26px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi span{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+.panel{background:var(--surface);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--edge);border-radius:24px;padding:20px;min-width:0;box-shadow:var(--shadow)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px}
+.seg button,.chip{font:500 12.5px var(--body);color:var(--ink);background:var(--sunk);border:1px solid transparent;border-radius:999px;padding:6px 13px;cursor:pointer}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--ink);color:var(--solid)}
+.chip:hover,.seg button:hover{border-color:rgba(22,32,46,.25)}
+svg.map{width:100%;height:clamp(250px,calc(100vh - 425px),600px);display:block;max-width:100%}
+svg.map path{stroke:var(--solid);stroke-width:1;cursor:pointer;transition:opacity .15s}
+svg.map path:hover{opacity:.8}
+svg.map path.sel{stroke:var(--ink);stroke-width:2.4}
+svg.map circle{fill:var(--high);stroke:var(--solid);stroke-width:1.5;pointer-events:none}
+.legend{display:flex;align-items:center;gap:8px;font:400 11.5px var(--mono);color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.legend i{flex:0 0 140px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--map-lo),var(--map-hi))}
+.legend em{font-style:normal;margin-left:auto;display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--high);display:inline-block}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:7px;z-index:9;max-width:220px}
+.dname{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.dname h2{font-size:26px}
+.rows{display:flex;flex-direction:column;margin-top:12px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:9px 0;border-top:1px solid var(--line)}
+.row .v{font:500 15px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.row small{grid-column:1/-1;color:var(--muted);font-size:11.5px}
+.meter{grid-column:1/-1;height:4px;background:var(--sunk);border-radius:2px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.pill{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,currentColor 11%,transparent);white-space:nowrap}
+.pill.high{color:var(--high)}.pill.medium{color:var(--med)}.pill.low{color:var(--low)}
+.finds{display:flex;flex-direction:column;gap:10px}
+.find{background:var(--surface);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--edge);border-radius:20px;padding:16px 18px;min-width:0;box-shadow:var(--shadow)}
+.find .hd{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:6px}
+.find .ty{font-size:12px;color:var(--muted)}
+.find h3{font:600 15.5px var(--body);margin:0 0 4px;text-wrap:balance}
+.find p{margin:0;color:var(--muted);font-size:14px;max-width:70ch}
+details{margin-top:10px}
+summary{cursor:pointer;font:500 13px var(--body);color:var(--accent);width:max-content;max-width:100%}
+.evi{margin-top:10px;background:var(--sunk);border-radius:14px;padding:12px;font-size:13px}
+.evi .rule{margin:0 0 8px;color:var(--ink)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+th.n{text-align:right}
+.tag{font:400 11px var(--mono);padding:1px 6px;border-radius:4px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.tag.x{background:color-mix(in srgb,var(--med) 18%,transparent);color:var(--med)}
+.raw.diff{color:var(--med);font-weight:500}
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ask{display:flex;gap:8px;flex-wrap:wrap}
+.ask input{flex:1 1 260px;min-width:0;font:400 15px var(--body);padding:12px 18px;border-radius:999px;border:1px solid var(--edge);background:rgba(255,255,255,.7);box-shadow:var(--shadow);color:var(--ink)}
+.ask button{font:600 14px var(--body);padding:12px 22px;border-radius:999px;border:0;background:var(--ink);color:var(--solid);cursor:pointer}
+pre.sql{font:400 12.5px/1.6 var(--mono);background:var(--sunk);padding:14px 16px;border-radius:16px;margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.note{font-size:12.5px;color:var(--muted);max-width:75ch}
+.srcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.srcs div{border-top:1px solid var(--line);padding-top:8px;font-size:13px;min-width:0}
+.srcs b{display:block}
+a{color:var(--accent)}
+.stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:860px){svg.map{height:auto}.grid,.intro{grid-template-columns:minmax(0,1fr)}nav{margin-left:0}}
+nav button svg{display:none}
+@media (max-width:640px){
+ .wrap{padding-inline:16px}
+ header.top{position:static;margin-top:12px}
+ .bar{flex-wrap:nowrap;padding:8px 14px;border-radius:22px}
+ .proto{margin-left:auto}
+ nav.dock{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:8;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:5px;border-radius:28px;background:rgba(255,255,255,.66);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 18px 40px -14px rgba(22,32,46,.38)}
+ nav.dock button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border-radius:23px;font-size:10.5px;letter-spacing:.01em;min-width:0}
+ nav.dock button svg{display:block;width:20px;height:20px}
+ nav.dock button[aria-selected="true"]{background:var(--ink);color:var(--solid);box-shadow:0 6px 16px -6px rgba(22,32,46,.55)}
+ main{padding-block:18px 28px;gap:16px}
+ footer .wrap{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 104px)}
+ h1{font-size:27px}
+ .intro{gap:14px}
+ .seg,.scroller{flex-wrap:nowrap;overflow-x:auto;margin-inline:-16px;padding-inline:16px;scrollbar-width:none;scroll-snap-type:x proximity;min-width:0}
+ .seg::-webkit-scrollbar,.scroller::-webkit-scrollbar{display:none}
+ .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;min-width:0;padding:6px;border-radius:24px;background:var(--surface);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow)}
+ .kpi{min-width:0;padding:10px 4px 8px;text-align:center;border-left:1px solid var(--line)}
+ .kpi:first-child{border-left:0}
+ .kpi b{font-size:22px}
+ .kpi span{display:block;font-size:10.5px;line-height:1.25;text-wrap:balance}
+ .kpi:last-child{order:-1;grid-column:1/-1;border-left:0;display:flex;align-items:baseline;justify-content:space-between;gap:10px;text-align:left;padding:10px 12px 12px;margin-bottom:4px;border-radius:19px;background:var(--ink);color:var(--solid)}
+ .kpi:last-child b{font-size:30px}
+ .kpi:last-child span{font-size:12px;color:rgba(255,255,255,.72)}
+ .panel{padding:16px;border-radius:22px}
+ .seg{margin:10px -16px 8px}
+ .seg button,.scroller .chip{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;padding:8px 14px}
+ .dname h2{font-size:24px}
+ .find{padding:14px 16px}
+ .ask input{flex-basis:100%}.ask button{flex:1}
+ .legend em{margin-left:0;flex-basis:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Account + review controls: reuse the existing glass tokens */
+.auth{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
+.authc{width:min(400px,100%);display:flex;flex-direction:column;gap:14px;padding:28px}
+.authc .mark{width:40px;height:40px}
+.authc .brandrow{display:flex;align-items:center;gap:10px}
+.fld{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted)}
+.fld input{font:400 15px var(--body);padding:11px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.7);color:var(--ink);min-width:0}
+.go{font:600 14px var(--body);padding:12px 22px;border-radius:999px;border:0;background:var(--ink);color:var(--solid);cursor:pointer}
+.go:disabled{opacity:.6;cursor:default}
+.lnk{background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline}
+.authc .note{margin:0}
+.note.err{color:var(--high)}
+.um{position:relative;margin:0;flex:0 0 auto}
+.um summary{list-style:none;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--solid);display:grid;place-items:center;font:600 12px var(--body);letter-spacing:.02em}
+.um summary::-webkit-details-marker{display:none}
+.ump{position:absolute;right:0;top:44px;z-index:9;min-width:230px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;border-radius:18px;background:rgba(255,255,255,.94);border:1px solid var(--edge);box-shadow:0 18px 40px -14px rgba(22,32,46,.38);font-size:13px}
+.ump span{color:var(--muted);overflow-wrap:anywhere}
+.ump .chip{margin-top:8px}
+.rev{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.rev .eyebrow{margin-right:4px}
+.rev .chip:not([aria-pressed="true"]){background:rgba(255,255,255,.7)}
+.rev .note{flex-basis:100%;margin:2px 0 0}
+#hist .eyebrow{flex:0 0 auto;margin-right:4px}
+@media (max-width:640px){.um{margin-left:0}.authc{padding:22px}}
+</style>
+<div class="auth" id="auth" hidden>
+ <form class="panel authc" id="authf" novalidate>
+  <div class="brandrow"><svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24.5" fill="none" stroke="currentColor" stroke-width="2"/><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 15 L26 26 M40 15 L26 26 M26 42 L26 26"/></g><circle cx="12" cy="15" r="3.6" fill="currentColor"/><circle cx="40" cy="15" r="3.6" fill="currentColor"/><circle cx="26" cy="42" r="3.6" fill="currentColor"/><circle cx="26" cy="26" r="5.2" fill="var(--saffron)"/></svg><div class="brand"><b>Samanvay</b><span class="hi" lang="hi">समन्वय</span></div></div>
+  <div><div class="eyebrow">Cross-ministry district intelligence</div><h2 id="auth-h">Sign in</h2></div>
+  <label class="fld" id="f-name" hidden><span>Full name</span><input name="name" autocomplete="name"></label>
+  <label class="fld" id="f-min" hidden><span>Ministry or department (optional)</span><input name="ministry" autocomplete="organization"></label>
+  <label class="fld"><span>Email</span><input name="email" type="email" autocomplete="username"></label>
+  <label class="fld"><span>Password</span><input name="password" type="password" autocomplete="current-password"></label>
+  <p class="note err" id="auth-err" role="alert" hidden></p>
+  <button class="go" type="submit" id="auth-go">Sign in</button>
+  <p class="note"><span id="auth-q">No account yet?</span> <button class="lnk" type="button" id="auth-sw">Create one</button></p>
+ </form>
+</div>
+<header class="top" hidden><div class="wrap"><div class="bar">
+  <svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24.5" fill="none" stroke="currentColor" stroke-width="2"/><g stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M12 15 L26 26 M40 15 L26 26 M26 42 L26 26"/></g><circle cx="12" cy="15" r="3.6" fill="currentColor"/><circle cx="40" cy="15" r="3.6" fill="currentColor"/><circle cx="26" cy="42" r="3.6" fill="currentColor"/><circle cx="26" cy="26" r="5.2" fill="var(--saffron)"/></svg>
+  <div class="brand"><b>Samanvay</b><span class="hi" lang="hi">समन्वय</span></div>
+  <span class="proto">Prototype</span>
+  <nav role="tablist" id="nav"></nav>
+  <details class="um" id="um"><summary id="um-i" aria-label="Account"></summary><div class="ump"><b id="um-n"></b><span id="um-e"></span><span id="um-m"></span><span class="tag" id="um-r"></span><button class="chip" type="button" id="um-out">Sign out</button></div></details>
+</div></div></header>
+<main class="wrap" id="main" hidden>
+<section id="t-overview" class="stack">
+  <div class="intro">
+    <div><div class="eyebrow">Maharashtra · 3 ministries, 1 district record</div>
+      <h1>Where schemes meet, and where they miss each other</h1>
+      <p class="lede">Jal Jeevan Mission, PMAY-Gramin and NFHS-5 are published separately. Samanvay joins them on one resolved district and shows what only appears after the join.</p></div>
+    <div class="kpis" id="kpis"></div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="eyebrow">Colour districts by</div>
+      <div class="seg" id="seg"></div>
+      <svg class="map" id="map" role="group" aria-label="Maharashtra district map"></svg>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="stack">
+      <div class="panel" id="dpanel"></div>
+    </div>
+  </div>
+  <div class="stack"><h2>Needs attention first</h2><div class="finds" id="topfinds"></div>
+  <div><button class="chip" id="allf">See all findings</button></div></div>
+</section>
+<section id="t-harmonise" class="stack" hidden>
+  <div><div class="eyebrow">Entity resolution</div><h1>One district, four spellings</h1>
+  <p class="lede">Every source row is matched to a canonical district before any number is compared. Renamed districts use a rename rule, spelling variants use string similarity, and each match keeps its method and score so it can be audited.</p></div>
+  <div class="filters"><button class="chip" id="onlyc" aria-pressed="true">Only show conflicts</button><span class="note" id="hcount"></span></div>
+  <div class="panel tw"><table id="htable"></table></div>
+  <h2>Sources</h2>
+  <div class="srcs">
+    <div><b>Jal Jeevan Mission</b>Ministry of Jal Shakti. Rural households and tap connections, as on 10 Feb 2025. <a href="https://eparlib.sansad.in/bitstream/123456789/2988698/1/AU1425_5fYON6.pdf">Lok Sabha Q.1425</a></div>
+    <div><b>PMAY-Gramin</b>Ministry of Rural Development. Houses constructed, 2019-20 to 2021-22. <a href="https://eparlib.nic.in/bitstream/123456789/1931790/1/AU2078.pdf">Lok Sabha Q.2078</a></div>
+    <div><b>NFHS-5</b>Ministry of Health and Family Welfare. District fact sheets, 2019-21. <a href="https://github.com/pratapvardhan/NFHS-5">District CSV</a></div>
+    <div><b>District boundaries and LGD codes</b>Census 2011 boundaries with Local Government Directory codes. <a href="https://github.com/datta07/INDIAN-SHAPEFILES">Shapefile repository</a></div>
+  </div>
+  <p class="note">The two scheme tables were transcribed from parliamentary answers and are pending a line-by-line check against the PDFs. Periods differ between sources, so every figure in this tool carries its period.</p>
+</section>
+<section id="t-findings" class="stack" hidden>
+  <div><div class="eyebrow">Computed, then explained</div><h1>Findings with their evidence</h1>
+  <p class="lede">Each finding is produced by a stated rule over the joined data. Open any one to see the rule, the data points, and the source row each came from.</p></div>
+  <div class="filters scroller" id="ffilters"></div>
+  <div class="finds" id="allfinds"></div>
+</section>
+<section id="t-ask" class="stack" hidden>
+  <div><div class="eyebrow">Query across schemes</div><h1>Ask a question in plain words</h1>
+  <p class="lede">The question is turned into a structured query over the joined district table. The query is shown, so you can check what was actually asked of the data.</p></div>
+  <form class="ask" id="askf"><input id="q" type="text" autocomplete="off" aria-label="Question" value="High housing per 1000 but low tap coverage"><button type="submit">Run query</button></form>
+  <div class="filters scroller" id="samples"></div>
+  <div class="filters scroller" id="hist" hidden></div>
+  <div class="stack" id="ans"></div>
+  <p class="note">The question is parsed on the server by a rule-based parser for a fixed set of metrics, and the SQL shown is the statement that ran on the database. The production design replaces the parser with an LLM that writes SQL against the same table.</p>
+</section>
+</main>
+<footer hidden><div class="wrap">
+<div><h4>About</h4><p>Samanvay joins scheme data published by different ministries onto one resolved district record, then computes gaps, overlaps and anomalies with their evidence.</p></div>
+<div><h4>Data sources</h4><p>Jal Jeevan Mission (Lok Sabha Q.1425), PMAY-Gramin (Lok Sabha Q.2078), NFHS-5 district fact sheets, Census 2011 boundaries with LGD codes.</p></div>
+<div><h4>Disclaimer</h4><p>Student prototype for the ELEVATE 1.0 hackathon. Not an official government website. Figures are pending verification against source documents. Updated 3 October 2026.</p></div>
+</div></footer>
+<div class="tip" id="tip" hidden></div>
+<script>
+async function api(path,opt={}){const r=await fetch(path,{method:opt.method||'GET',headers:opt.body?{'content-type':'application/json'}:{},body:opt.body?JSON.stringify(opt.body):undefined,credentials:'same-origin'});let j=null;try{j=await r.json()}catch(e){}if(!r.ok){const d=j&&j.detail,err=new Error(Array.isArray(d)?d.map(x=>x.msg).join('. '):d||'Request failed');err.status=r.status;throw err}return j}
+function start(DATA){
+const USER=DATA.user,REV=DATA.reviews||{};
+const $=s=>document.querySelector(s),el=(t,a={},h='')=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);e.innerHTML=h;return e};
+const fmt=n=>n==null?'n/a':typeof n==='number'?n.toLocaleString('en-IN',{maximumFractionDigits:2}):n;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const D=DATA.districts,F=DATA.findings,byName=Object.fromEntries(D.map(d=>[d.name,d]));
+const SJ='JJM, as on 10 Feb 2025',SP='PMAY-G, 2019-20 to 2021-22',SN='NFHS-5, 2019-21';
+const M={
+ jjm_pct:{label:'Tap water coverage',unit:'%',col:'jjm_tap_pct',src:SJ,get:d=>d.jjm_pct,keys:['tap','jjm','jal jeevan','coverage','water connection']},
+ uncon:{label:'Households without a tap',unit:'',col:'hh_without_tap',src:SJ,get:d=>d.uncon,keys:['unconnected','without a tap','without tap','no tap']},
+ pm_per1000:{label:'PMAY-G houses per 1,000 rural households',short:'Housing intensity',unit:'',col:'pmayg_per_1000_hh',src:SP+' over JJM households',get:d=>d.pm_per1000,keys:['per 1000','per 1,000','housing','construction']},
+ pm_total:{label:'PMAY-G houses built',unit:'',col:'pmayg_houses',src:SP,get:d=>d.pm_total,keys:['houses','house','pmay']},
+ sanitation:{label:'Improved sanitation',unit:'%',col:'nfhs_sanitation_pct',src:SN,get:d=>d.nfhs&&d.nfhs.sanitation,keys:['sanitation','toilet']},
+ water:{label:'Improved water source',unit:'%',col:'nfhs_water_source_pct',src:SN,get:d=>d.nfhs&&d.nfhs.water,keys:['improved water','water source']},
+ cleanfuel:{label:'Clean cooking fuel',unit:'%',col:'nfhs_clean_fuel_pct',src:SN,get:d=>d.nfhs&&d.nfhs.cleanfuel,keys:['clean fuel','cooking']},
+ insurance:{label:'Health insurance cover',unit:'%',col:'nfhs_insurance_pct',src:SN,get:d=>d.nfhs&&d.nfhs.insurance,keys:['insurance']},
+ hh:{label:'Rural households',unit:'',col:'rural_households',src:SJ,get:d=>d.hh,keys:['rural households']}
+};
+const MAPM=['jjm_pct','pm_per1000','sanitation','uncon'];
+let S={tab:'overview',metric:'jjm_pct',sel:'Nandurbar',ftype:'All',onlyc:true};
+const TABS=[['overview','Overview'],['harmonise','Harmonisation'],['findings','Findings'],['ask','Ask']];
+function setTab(t){S.tab=t;TABS.forEach(([k])=>{$('#t-'+k).hidden=k!==t});document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));try{history.replaceState(null,'','#'+t)}catch(e){}window.scrollTo(0,0)}
+const ICON={overview:'<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13M15 6.5v13"/>',harmonise:'<path d="M4 6h5l6 12h5M4 18h5l2-4M15 6h5l-0 0M13 10l2-4"/>',findings:'<path d="M12 3 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.3"/>',ask:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>'};
+TABS.forEach(([k,l])=>{const b=el('button',{role:'tab','data-t':k},`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`+l);b.onclick=()=>setTab(k);$('#nav').append(b)});
+// KPIs
+const conflicts=D.filter(d=>Object.values(d.src).some(s=>s.method!=='exact'));
+const nconf=D.reduce((a,d)=>a+Object.values(d.src).filter(s=>s.method!=='exact').length,0);
+$('#kpis').innerHTML=[[3,'ministries joined'],[D.length,'districts resolved'],[nconf,'name conflicts fixed'],[F.length,'findings'],[DATA.state.jjm_pct+'%','state tap coverage']].map(([a,b])=>`<div class="kpi"><b>${a}</b><span>${b}</span></div>`).join('');
+// Map
+const map=$('#map');map.setAttribute('viewBox',`-4 -4 ${DATA.map.w+8} ${DATA.map.h+8}`);
+const highD=new Set(F.filter(f=>f.sev==='high'&&f.district).map(f=>f.district));
+const tip=$('#tip');
+D.forEach(d=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d.path);p.setAttribute('tabindex','0');p.setAttribute('role','button');p.dataset.n=d.name;
+ p.onclick=()=>{S.sel=d.name;draw()};p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();S.sel=d.name;draw()}};
+ p.onmousemove=e=>{if(matchMedia('(hover:none)').matches)return;const m=M[S.metric],v=m.get(d);tip.hidden=false;tip.innerHTML=`<b>${esc(d.name)}</b><br>${m.label}: ${v==null?'not reported':fmt(v)+m.unit}`;tip.style.left=Math.min(e.clientX+14,innerWidth-230)+'px';tip.style.top=e.clientY+14+'px'};
+ p.onmouseleave=()=>tip.hidden=true;map.append(p)});
+D.filter(d=>highD.has(d.name)).forEach(d=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',d.c[0]);c.setAttribute('cy',d.c[1]);c.setAttribute('r',6);map.append(c)});
+{const bb=map.getBBox();map.setAttribute('viewBox',`${bb.x-8} ${bb.y-8} ${bb.width+16} ${bb.height+16}`)}
+MAPM.forEach(k=>{const b=el('button',{'data-m':k},M[k].short||M[k].label);b.onclick=()=>{S.metric=k;draw()};$('#seg').append(b)});
+function findCard(f,open){return `<article class="find ${f.sev}"><div class="hd"><span class="pill ${f.sev}">${f.sev}</span><span class="ty">${f.type}</span><span class="tag rvt" data-fid="${f.id}"${(REV[f.id]||{}).status&&REV[f.id].status!=='open'?'':' hidden'}>${(REV[f.id]||{status:''}).status}</span></div><h3>${esc(f.title)}</h3><p>${esc(f.detail)}</p><details${open?' open':''}><summary>Why? Show the evidence</summary><div class="evi"><p class="rule"><b>Rule.</b> ${esc(f.rule)}</p><div class="tw"><table><tr><th>Data point</th><th class="n">Value</th><th>Source</th><th class="n">Row</th></tr>${f.evidence.map(e=>`<tr><td>${esc(e.label)}</td><td class="n">${fmt(e.value)}</td><td>${esc(e.source)}</td><td class="n">${e.row}</td></tr>`).join('')}</table></div>${revBar(f.id)}</div></details></article>`}
+const STS=['open','acknowledged','resolved'],cap=x=>x[0].toUpperCase()+x.slice(1);
+function revBar(id){const r=REV[id]||{status:'open'};return `<div class="rev" data-fid="${id}"><span class="eyebrow">Review status</span>${STS.map(x=>`<button class="chip" type="button" data-st="${x}" aria-pressed="${r.status===x}">${cap(x)}</button>`).join('')}<span class="note">${r.by?`Set by ${esc(r.by)} on ${esc(r.at)} UTC`:''}</span></div>`}
+document.addEventListener('click',async e=>{const b=e.target.closest('.rev button');if(!b)return;const id=b.parentElement.dataset.fid;try{REV[id]=await api(`/api/findings/${id}/review`,{method:'PATCH',body:{status:b.dataset.st}})}catch(err){b.parentElement.querySelector('.note').textContent='Could not save: '+err.message;return}
+ document.querySelectorAll(`.rev[data-fid="${id}"]`).forEach(n=>n.outerHTML=revBar(id));document.querySelectorAll(`.rvt[data-fid="${id}"]`).forEach(n=>{n.textContent=REV[id].status;n.hidden=REV[id].status==='open'})});
+function draw(){
+ const m=M[S.metric],vals=D.map(m.get).filter(v=>v!=null),lo=Math.min(...vals),hi=Math.max(...vals);
+ map.querySelectorAll('path').forEach(p=>{const d=byName[p.dataset.n],v=m.get(d);p.style.fill=v==null?'var(--none)':`color-mix(in oklab,var(--map-hi) ${Math.round((v-lo)/(hi-lo)*100)}%,var(--map-lo))`;p.classList.toggle('sel',d.name===S.sel);p.setAttribute('aria-label',d.name+', '+m.label+' '+(v==null?'not reported':fmt(v)+m.unit))});
+ const selp=map.querySelector('path.sel');if(selp)map.insertBefore(selp,map.querySelector('circle'));
+ document.querySelectorAll('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===S.metric));
+ $('#legend').innerHTML=`<span>${fmt(lo)}${m.unit}</span><i></i><span>${fmt(hi)}${m.unit}</span><span>${m.src}</span><em><span class="dot"></span>high-severity finding</em>`;
+ const d=byName[S.sel],fs=F.filter(f=>f.district===d.name);
+ const row=(k,extra='')=>{const mm=M[k],v=mm.get(d);return `<div class="row"><span>${mm.label}</span><span class="v">${v==null?'not reported':fmt(v)+mm.unit}</span>${mm.unit==='%'&&v!=null?`<div class="meter"><i style="width:${v}%"></i></div>`:''}<small>${mm.src}${extra}</small></div>`};
+ const names=Object.entries(d.src).filter(([,s])=>s.method!=='exact').map(([k,s])=>`${k.toUpperCase()} calls it "${esc(s.raw)}"`).join('; ');
+ $('#dpanel').innerHTML=`<div class="eyebrow">District record${d.lgd?' · LGD '+d.lgd:''}</div><div class="dname"><h2>${esc(d.name)}</h2>${fs.map(f=>`<span class="pill ${f.sev}">${f.type}</span>`).join('')}</div>${names?`<p class="note" style="margin:6px 0 0">${names}.</p>`:''}
+ <div class="rows">${d.hh==null?`<div class="row"><span>Rural scheme data</span><span class="v">none</span><small>Urban district. JJM and PMAY-Gramin do not report here.</small></div>`:row('jjm_pct')+row('uncon')+row('pm_total',d.pm_flag?` · ${d.pm_flag} figure flagged for verification`:'')+row('pm_per1000')}${row('sanitation')+row('water')+row('cleanfuel')}</div>`;
+}
+$('#topfinds').innerHTML=F.slice(0,3).map((f,i)=>findCard(f,i===0)).join('');
+$('#allf').onclick=()=>setTab('findings');
+// Findings tab
+const types=['All',...new Set(F.map(f=>f.type))];
+function drawF(){$('#ffilters').innerHTML='';types.forEach(t=>{const n=t==='All'?F.length:F.filter(f=>f.type===t).length;const b=el('button',{class:'chip','aria-pressed':S.ftype===t},`${t} ${n}`);b.onclick=()=>{S.ftype=t;drawF()};$('#ffilters').append(b)});
+ $('#allfinds').innerHTML=F.filter(f=>S.ftype==='All'||f.type===S.ftype).map(f=>findCard(f)).join('')}
+// Harmonisation
+function drawH(){const rows=S.onlyc?conflicts:D,cell=(d,k)=>{const s=d.src[k];if(!s)return '<td><span class="tag">not in source</span></td>';const x=s.method!=='exact';return `<td><span class="raw${x?' diff':''}">${esc(s.raw)}</span> ${x?`<span class="tag x">${s.method} ${s.score}</span>`:''}</td>`};
+ $('#htable').innerHTML=`<tr><th>Canonical district</th><th class="n">LGD</th><th>JJM (2025)</th><th>PMAY-G (2022)</th><th>NFHS-5 (2021)</th><th>Boundary file (2011)</th></tr>`+rows.map(d=>`<tr><td><b>${esc(d.name)}</b></td><td class="n">${d.lgd??''}</td>${cell(d,'jjm')}${cell(d,'pmay')}${cell(d,'nfhs')}${cell(d,'lgd')}</tr>`).join('');
+ $('#onlyc').setAttribute('aria-pressed',S.onlyc);$('#hcount').textContent=`${rows.length} of ${D.length} districts shown. ${nconf} source names differed from the canonical name.`}
+$('#onlyc').onclick=()=>{S.onlyc=!S.onlyc;drawH()};
+// Ask
+async function loadHist(){let h=[];try{h=await api('/api/queries')}catch(e){}const H=$('#hist');H.hidden=!h.length;H.innerHTML='<span class="eyebrow">Your recent queries</span>';h.forEach(x=>{const b=el('button',{class:'chip',type:'button'});b.textContent=x.question;b.onclick=()=>{$('#q').value=x.question;run(x.question)};H.append(b)})}
+async function run(q,log=true){const A=$('#ans');let r;
+ try{r=await api('/api/query',{method:'POST',body:{question:q,log}})}catch(e){if(e.status===401){location.reload();return}A.innerHTML=`<div class="panel">The query could not be run: ${esc(e.message)}</div>`;return}
+ if(r.error){A.innerHTML=`<div class="panel">No metric recognised in that question. Try words like tap coverage, houses, sanitation, clean fuel, or name a district.</div>`;return}
+ const cols=r.columns,rows=r.districts.map(n=>byName[n]),sql=r.sql;if(log)loadHist();
+ A.innerHTML=`<pre class="sql">${esc(sql)}</pre><div class="panel"><h2 style="margin-bottom:10px">${rows.length} district${rows.length===1?'':'s'}</h2>${rows.length?`<div class="tw"><table><tr><th>District</th>${cols.map(k=>`<th class="n">${M[k].label}</th>`).join('')}</tr>${rows.map(d=>`<tr><td><b>${esc(d.name)}</b></td>${cols.map(k=>{const v=M[k].get(d);return `<td class="n">${v==null?'n/a':fmt(v)+M[k].unit}</td>`}).join('')}</tr>`).join('')}</table></div>`:'<p class="note">No district matches. Loosen a threshold.</p>'}<p class="note" style="margin:10px 0 0">Sources: ${cols.map(k=>M[k].label+' ('+M[k].src+')').join('; ')}.</p></div>`}
+['High housing per 1000 but low tap coverage','Districts with tap coverage below 80','Top 5 by households without a tap','Sanitation below 60 and houses above 20000','Lowest 5 by clean fuel','Nandurbar and Palghar'].forEach(s=>{const b=el('button',{class:'chip',type:'button'},s);b.onclick=()=>{$('#q').value=s;run(s)};$('#samples').append(b)});
+$('#askf').onsubmit=e=>{e.preventDefault();run($('#q').value)};
+const mq=matchMedia('(max-width:640px)'),navEl=$('#nav'),barEl=document.querySelector('.bar');const dock=()=>{if(mq.matches){navEl.classList.add('dock');document.body.append(navEl)}else{navEl.classList.remove('dock');barEl.insertBefore(navEl,$('#um'))}};dock();mq.addEventListener('change',dock);
+draw();drawF();drawH();run($('#q').value,false);loadHist();
+const h=location.hash.slice(1);setTab(TABS.some(t=>t[0]===h)?h:'overview');
+$('#um-i').textContent=USER.name.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();$('#um-n').textContent=USER.name;$('#um-e').textContent=USER.email;$('#um-m').textContent=USER.ministry||'';$('#um-m').hidden=!USER.ministry;$('#um-r').textContent=USER.role;
+$('#um-out').onclick=async()=>{try{await api('/api/auth/logout',{method:'POST'})}catch(e){}location.reload()};
+document.addEventListener('click',e=>{const u=$('#um');if(u.open&&!u.contains(e.target))u.open=false});
+}
+// Session gate: nothing is rendered until the server confirms who is signed in.
+{const g=x=>document.querySelector(x),shell=['header.top','#main','footer'].map(g),authEl=g('#auth'),f=g('#authf'),err=g('#auth-err');let reg=false;
+ const lock=on=>{shell.forEach(e=>e.hidden=on);authEl.hidden=!on},fail=m=>{err.textContent=m;err.hidden=false};
+ g('#auth-sw').onclick=()=>{reg=!reg;g('#f-name').hidden=g('#f-min').hidden=!reg;g('#auth-h').textContent=reg?'Create an account':'Sign in';g('#auth-go').textContent=reg?'Create account':'Sign in';g('#auth-q').textContent=reg?'Already registered?':'No account yet?';g('#auth-sw').textContent=reg?'Sign in':'Create one';f.password.autocomplete=reg?'new-password':'current-password';err.hidden=true};
+ f.onsubmit=async e=>{e.preventDefault();err.hidden=true;const body={email:f.email.value.trim(),password:f.password.value};
+  if(!/^\S+@\S+\.\S+$/.test(body.email))return fail('Enter a valid email address.');
+  if(reg){body.name=f.name.value.trim();body.ministry=f.ministry.value.trim()||null;if(body.name.length<2)return fail('Enter your full name.');if(body.password.length<8)return fail('Use a password of at least 8 characters.')}
+  else if(!body.password)return fail('Enter your password.');
+  g('#auth-go').disabled=true;try{await api(reg?'/api/auth/register':'/api/auth/login',{method:'POST',body});location.reload()}catch(x){fail(x.status?x.message:'Cannot reach the Samanvay server.')}finally{g('#auth-go').disabled=false}};
+ api('/api/bootstrap').then(d=>{lock(false);start(d)},x=>{lock(true);if(x.status!==401)fail('Cannot reach the Samanvay server. Start it with run.bat, then open http://localhost:8000')})}
+</script>
+
+</body>
+</html>
